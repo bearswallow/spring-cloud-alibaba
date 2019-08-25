@@ -127,7 +127,10 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 		for (NacosConfigProperties.Config config : extConfigs) {
 			String dataId = config.getDataId();
 			String fileExtension = dataId.substring(dataId.lastIndexOf(".") + 1);
-			loadNacosDataIfPresent(compositePropertySource, dataId, config.getGroup(),
+			// if the group is empty or DEFAULT_GROUP and the {@link NacosConfigProperties#group} has value,
+			// it will take the {@link NacosConfigProperties#group} value.
+			String group = StringUtils.hasText(config.getGroup()) && !config.getGroup().equals("DEFAULT_GROUP") ? config.getGroup() : nacosConfigProperties.getGroup();
+			loadNacosDataIfPresent(compositePropertySource, dataId, group,
 					fileExtension, config.isRefresh());
 		}
 	}
